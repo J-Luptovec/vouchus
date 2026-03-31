@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.env
+*.env.local
+.idea
+.claude
+
+# Backend
+backend/node_modules/
+backend/dist/
+backend/prisma/migrations/dev.db
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db

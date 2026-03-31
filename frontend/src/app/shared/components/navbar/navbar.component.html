@@ -1,0 +1,15 @@
+<mat-toolbar color="primary" class="navbar">
+  <a routerLink="/products" class="brand">Vouchus</a>
+  <span class="spacer"></span>
+  <a mat-button routerLink="/products" routerLinkActive="active-link">Products</a>
+
+  @if (user$ | async; as user) {
+    <span class="username">{{ user.username }}</span>
+    <button mat-button (click)="auth.logout()">
+      <mat-icon>logout</mat-icon> Sign Out
+    </button>
+  } @else {
+    <a mat-button routerLink="/login">Sign In</a>
+    <a mat-flat-button routerLink="/register">Register</a>
+  }
+</mat-toolbar>

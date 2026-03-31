@@ -1,0 +1,30 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="review-form">
+  <h3>Write a Review</h3>
+
+  <div class="star-selector" role="group" aria-label="Rating">
+    @for (star of [1,2,3,4,5]; track star) {
+      <button type="button" mat-icon-button
+        (click)="setRating(star)"
+        (mouseenter)="hoveredStar.set(star)"
+        (mouseleave)="hoveredStar.set(0)"
+        [attr.aria-label]="star + ' stars'">
+        <mat-icon [class.active]="star <= (hoveredStar() || (form.value.rating ?? 0))">star</mat-icon>
+      </button>
+    }
+    @if (form.get('rating')?.invalid && form.get('rating')?.touched) {
+      <span class="rating-error">Please select a rating</span>
+    }
+  </div>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Your review</mat-label>
+    <textarea matInput formControlName="body" rows="4" placeholder="Share your experience..."></textarea>
+    @if (form.get('body')?.hasError('required') && form.get('body')?.touched) {
+      <mat-error>Review text is required</mat-error>
+    }
+  </mat-form-field>
+
+  <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || submitting()">
+    {{ submitting() ? 'Submitting…' : 'Submit Review' }}
+  </button>
+</form>

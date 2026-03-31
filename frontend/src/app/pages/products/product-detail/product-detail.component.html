@@ -1,0 +1,64 @@
+@if (loading()) {
+  <div class="spinner-container"><mat-spinner></mat-spinner></div>
+} @else if (error()) {
+  <p class="error-message">{{ error() }}</p>
+} @else if (product()) {
+  <div class="detail-page">
+    <a mat-button routerLink="/products" class="back-btn">
+      <mat-icon>arrow_back</mat-icon> All Products
+    </a>
+
+    <div class="product-header">
+      <img [src]="product()!.imageUrl || 'https://placehold.co/600x400?text=No+Image'" [alt]="product()!.name" class="product-image" />
+      <div class="product-info">
+        <mat-chip-set><mat-chip>{{ product()!.category }}</mat-chip></mat-chip-set>
+        <h1>{{ product()!.name }}</h1>
+        <div class="rating-row">
+          <app-star-rating [rating]="product()!.avgRating ?? 0"></app-star-rating>
+          <span class="rating-text">
+            {{ product()!.avgRating ? (product()!.avgRating! | number:'1.1-1') : 'No ratings yet' }}
+            ({{ reviews().length }} review{{ reviews().length !== 1 ? 's' : '' }})
+          </span>
+        </div>
+        <p class="price">{{ product()!.price | currency }}</p>
+        <p class="description">{{ product()!.description }}</p>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <section class="reviews-section">
+      <h2>Reviews</h2>
+
+      @if (auth.isLoggedIn() && !hasReviewed()) {
+        <app-review-form
+          [productId]="product()!.id"
+          (reviewAdded)="onReviewAdded($event)">
+        </app-review-form>
+        <mat-divider></mat-divider>
+      }
+
+      @if (reviews().length === 0) {
+        <p class="no-reviews">No reviews yet. Be the first to review!</p>
+      } @else {
+        <div class="review-list">
+          @for (review of reviews(); track review.id) {
+            <div class="review-item">
+              <div class="review-header">
+                <strong>{{ review.user.username }}</strong>
+                <app-star-rating [rating]="review.rating"></app-star-rating>
+                <span class="review-date">{{ review.createdAt | date:'mediumDate' }}</span>
+                @if (auth.currentUser?.id === review.user.id) {
+                  <button mat-icon-button color="warn" (click)="onReviewDeleted(review.id)" title="Delete review">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                }
+              </div>
+              <p class="review-body">{{ review.body }}</p>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </div>
+}

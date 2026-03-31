@@ -1,0 +1,47 @@
+<div class="product-list-page">
+  <h1 class="page-title">Products</h1>
+
+  @if (loading()) {
+    <div class="spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
+  } @else if (error()) {
+    <p class="error-message">{{ error() }}</p>
+  } @else {
+    <div class="product-grid">
+      @for (product of response()?.products; track product.id) {
+        <mat-card class="product-card">
+          <img mat-card-image [src]="product.imageUrl || 'https://placehold.co/400x220?text=No+Image'" [alt]="product.name" />
+          <mat-card-header>
+            <mat-card-title>{{ product.name }}</mat-card-title>
+            <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <p class="product-description">{{ product.description | slice:0:100 }}{{ product.description.length > 100 ? '…' : '' }}</p>
+            <div class="product-meta">
+              <span class="price">{{ product.price | currency }}</span>
+              <div class="rating-row">
+                <app-star-rating [rating]="product.avgRating ?? 0"></app-star-rating>
+                <span class="review-count">({{ product._count?.reviews ?? 0 }})</span>
+              </div>
+            </div>
+          </mat-card-content>
+          <mat-card-actions>
+            <a mat-flat-button color="primary" [routerLink]="['/products', product.id]">View</a>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+
+    @if (response() && (response()?.totalPages ?? 0) > 1) {
+      <mat-paginator
+        [length]="response()?.total ?? 0"
+        [pageSize]="limit()"
+        [pageSizeOptions]="[6, 12, 24]"
+        [pageIndex]="page() - 1"
+        (page)="onPageChange($event)"
+        showFirstLastButtons>
+      </mat-paginator>
+    }
+  }
+</div>
