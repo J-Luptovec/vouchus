@@ -18,15 +18,13 @@ const products = [
 ];
 
 async function main() {
-  console.log('Seeding database...');
-  for (const product of products) {
-    await prisma.product.upsert({
-      where: { id: product.name }, // won't match, so always creates
-      update: {},
-      create: product,
-    });
+  const count = await prisma.product.count();
+  if (count > 0) {
+    console.log('Database already seeded, skipping.');
+    return;
   }
-  await prisma.product.createMany({ data: products, skipDuplicates: true });
+  console.log('Seeding database...');
+  await prisma.product.createMany({ data: products });
   console.log(`Seeded ${products.length} products.`);
 }
 
