@@ -1,7 +1,6 @@
-import { PrismaClient, Prisma } from '@prisma/client';
+import { prisma } from "../prisma";
 import { CreateReviewInput } from '../validators/review.validator';
-
-const prisma = new PrismaClient();
+import { Prisma } from "@prisma/client";
 
 export const reviewService = {
   async getReviews(productId: string, page: number, limit: number) {

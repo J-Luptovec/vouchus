@@ -2,10 +2,10 @@
 set -e
 
 echo "Pushing schema to database..."
-npx prisma db push --skip-generate
+npx prisma db push
 
 echo "Seeding database..."
-npx ts-node --transpile-only prisma/seed.ts
+npx tsx prisma/seed.ts
 
 echo "Starting server..."
-exec node dist/index.js
+exec npx tsx src/index.ts

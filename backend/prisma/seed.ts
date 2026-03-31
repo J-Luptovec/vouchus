@@ -1,6 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
+import { PrismaClient } from '../generated/prisma/client/client.js';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const prisma = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: process.env['DATABASE_URL']! });
+const prisma = new PrismaClient({ adapter });
 
 const products = [
   { name: 'Wireless Noise-Cancelling Headphones', description: 'Premium over-ear headphones with active noise cancellation and 30-hour battery life.', category: 'Electronics', price: 299.99, imageUrl: 'https://placehold.co/400x300?text=Headphones' },

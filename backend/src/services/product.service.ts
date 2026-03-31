@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
-import { CreateProductInput } from '../validators/product.validator';
 
-const prisma = new PrismaClient();
+import { CreateProductInput } from '../validators/product.validator';
+import { prisma } from "../prisma";
 
 export const productService = {
   async listProducts(page: number, limit: number) {
