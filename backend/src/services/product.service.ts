@@ -1,4 +1,3 @@
-import { CreateProductInput } from '../validators/product.validator';
 import { prisma } from '../prisma';
 
 export const productService = {
@@ -36,7 +35,4 @@ export const productService = {
     return product;
   },
 
-  async createProduct(data: CreateProductInput) {
-    return prisma.product.create({ data });
-  },
 };

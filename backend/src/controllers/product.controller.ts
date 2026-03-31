@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { productService } from '../services/product.service';
-import { createProductSchema, paginationSchema } from '../validators/product.validator';
+import { paginationSchema } from '../validators/product.validator';
 
 export const productController = {
   async listProducts(req: Request, res: Response, next: NextFunction) {
@@ -17,16 +17,6 @@ export const productController = {
     try {
       const product = await productService.getProduct(req.params['id'] as string);
       res.json(product);
-    } catch (err) {
-      next(err);
-    }
-  },
-
-  async createProduct(req: Request, res: Response, next: NextFunction) {
-    try {
-      const data = createProductSchema.parse(req.body);
-      const product = await productService.createProduct(data);
-      res.status(201).json(product);
     } catch (err) {
       next(err);
     }
