@@ -7,6 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
+import { ReviewService } from '../../../core/services/review.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Product } from '../../../models/product.model';
 import { Review } from '../../../models/review.model';
@@ -35,6 +36,7 @@ import { ReviewFormComponent } from '../../reviews/review-form/review-form.compo
 export class ProductDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private reviewService = inject(ReviewService);
   readonly auth = inject(AuthService);
 
   product = signal<Product | null>(null);
@@ -42,6 +44,7 @@ export class ProductDetailComponent implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
   hasReviewed = signal(false);
+  editingReview = signal<Review | null>(null);
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
@@ -66,16 +69,39 @@ export class ProductDetailComponent implements OnInit {
   onReviewAdded(review: Review) {
     this.reviews.update((prev) => [review, ...prev]);
     this.hasReviewed.set(true);
-    const product = this.product();
-    if (product) {
-      const allRatings = this.reviews().map((r) => r.rating);
-      const avg = allRatings.reduce((a, b) => a + b, 0) / allRatings.length;
-      this.product.set({ ...product, avgRating: avg });
-    }
+    this.updateAvgRating();
+  }
+
+  onReviewUpdated(review: Review) {
+    this.reviews.update((prev) => prev.map((r) => (r.id === review.id ? review : r)));
+    this.editingReview.set(null);
+    this.updateAvgRating();
+  }
+
+  onEditReview(review: Review) {
+    this.editingReview.set(review);
+  }
+
+  onEditCancelled() {
+    this.editingReview.set(null);
   }
 
   onReviewDeleted(reviewId: string) {
-    this.reviews.update((prev) => prev.filter((r) => r.id !== reviewId));
-    this.hasReviewed.set(false);
+    const productId = this.product()!.id;
+    this.reviewService.deleteReview(productId, reviewId).subscribe({
+      next: () => {
+        this.reviews.update((prev) => prev.filter((r) => r.id !== reviewId));
+        this.hasReviewed.set(false);
+        this.updateAvgRating();
+      },
+    });
+  }
+
+  private updateAvgRating() {
+    const product = this.product();
+    if (!product) return;
+    const allRatings = this.reviews().map((r) => r.rating);
+    const avg = allRatings.length ? allRatings.reduce((a, b) => a + b, 0) / allRatings.length : 0;
+    this.product.set({ ...product, avgRating: avg || undefined });
   }
 }

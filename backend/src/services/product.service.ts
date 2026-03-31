@@ -34,5 +34,4 @@ export const productService = {
     }
     return product;
   },
-
 };

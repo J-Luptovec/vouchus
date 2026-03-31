@@ -21,6 +21,13 @@ export class ReviewService {
     });
   }
 
+  updateReview(productId: string, reviewId: string, rating: number, body: string) {
+    return this.http.patch<Review>(
+      `${environment.apiUrl}/products/${productId}/reviews/${reviewId}`,
+      { rating, body },
+    );
+  }
+
   deleteReview(productId: string, reviewId: string) {
     return this.http.delete<void>(
       `${environment.apiUrl}/products/${productId}/reviews/${reviewId}`,

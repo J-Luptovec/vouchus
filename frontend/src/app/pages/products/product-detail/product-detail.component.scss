@@ -91,6 +91,11 @@
   padding: 16px;
   border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 8px;
+
+  &.editing {
+    border-color: var(--mat-sys-primary);
+    opacity: 0.6;
+  }
 }
 
 .review-header {

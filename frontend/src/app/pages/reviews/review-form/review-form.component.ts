@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, signal } from '@angular/core';
+import { Component, inject, signal, input, output, effect } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,8 +22,11 @@ import { Review } from '../../../models/review.model';
   styleUrl: './review-form.component.scss',
 })
 export class ReviewFormComponent {
-  @Input() productId!: string;
-  @Output() reviewAdded = new EventEmitter<Review>();
+  productId = input.required<string>();
+  editReview = input<Review>();
+  reviewAdded = output<Review>();
+  reviewUpdated = output<Review>();
+  editCancelled = output<void>();
 
   private fb = inject(FormBuilder);
   private reviewService = inject(ReviewService);
@@ -37,6 +40,21 @@ export class ReviewFormComponent {
     body: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(2000)]],
   });
 
+  constructor() {
+    effect(() => {
+      const review = this.editReview();
+      if (review) {
+        this.form.patchValue({ rating: review.rating, body: review.body });
+      } else {
+        this.form.reset({ rating: 0, body: '' });
+      }
+    });
+  }
+
+  get isEditMode() {
+    return !!this.editReview();
+  }
+
   setRating(value: number) {
     this.form.patchValue({ rating: value });
   }
@@ -45,18 +63,42 @@ export class ReviewFormComponent {
     if (this.form.invalid) return;
     this.submitting.set(true);
     const { rating, body } = this.form.value;
-    this.reviewService.createReview(this.productId, rating!, body!).subscribe({
-      next: (review) => {
-        this.reviewAdded.emit(review);
-        this.form.reset({ rating: 0, body: '' });
-        this.submitting.set(false);
-        this.snackBar.open('Review submitted!', 'Close', { duration: 3000 });
-      },
-      error: (err) => {
-        const msg = err.error?.error ?? 'Failed to submit review.';
-        this.snackBar.open(msg, 'Close', { duration: 4000 });
-        this.submitting.set(false);
-      },
-    });
+
+    if (this.isEditMode) {
+      this.reviewService
+        .updateReview(this.productId(), this.editReview()!.id, rating!, body!)
+        .subscribe({
+          next: (review) => {
+            this.reviewUpdated.emit(review);
+            this.form.reset({ rating: 0, body: '' });
+            this.submitting.set(false);
+            this.snackBar.open('Review updated!', 'Close', { duration: 3000 });
+          },
+          error: (err) => {
+            const msg = err.error?.error ?? 'Failed to update review.';
+            this.snackBar.open(msg, 'Close', { duration: 4000 });
+            this.submitting.set(false);
+          },
+        });
+    } else {
+      this.reviewService.createReview(this.productId(), rating!, body!).subscribe({
+        next: (review) => {
+          this.reviewAdded.emit(review);
+          this.form.reset({ rating: 0, body: '' });
+          this.submitting.set(false);
+          this.snackBar.open('Review submitted!', 'Close', { duration: 3000 });
+        },
+        error: (err) => {
+          const msg = err.error?.error ?? 'Failed to submit review.';
+          this.snackBar.open(msg, 'Close', { duration: 4000 });
+          this.submitting.set(false);
+        },
+      });
+    }
+  }
+
+  cancel() {
+    this.form.reset({ rating: 0, body: '' });
+    this.editCancelled.emit();
   }
 }

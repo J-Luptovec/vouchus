@@ -28,6 +28,20 @@ export const reviewController = {
     }
   },
 
+  async updateReview(req: Request, res: Response, next: NextFunction) {
+    try {
+      const data = createReviewSchema.parse(req.body);
+      const review = await reviewService.updateReview(
+        req.params['reviewId'] as string,
+        req.user!.userId,
+        data,
+      );
+      res.json(review);
+    } catch (err) {
+      next(err);
+    }
+  },
+
   async deleteReview(req: Request, res: Response, next: NextFunction) {
     try {
       await reviewService.deleteReview(req.params['reviewId'] as string, req.user!.userId);

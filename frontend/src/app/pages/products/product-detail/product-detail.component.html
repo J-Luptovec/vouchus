@@ -38,9 +38,14 @@
     <section class="reviews-section">
       <h2>Reviews</h2>
 
-      @if (auth.isLoggedIn() && !hasReviewed()) {
-        <app-review-form [productId]="product()!.id" (reviewAdded)="onReviewAdded($event)">
-        </app-review-form>
+      @if (auth.isLoggedIn() && (!hasReviewed() || editingReview())) {
+        <app-review-form
+          [productId]="product()!.id"
+          [editReview]="editingReview() ?? undefined"
+          (reviewAdded)="onReviewAdded($event)"
+          (reviewUpdated)="onReviewUpdated($event)"
+          (editCancelled)="onEditCancelled()"
+        ></app-review-form>
         <mat-divider></mat-divider>
       }
 
@@ -49,12 +54,19 @@
       } @else {
         <div class="review-list">
           @for (review of reviews(); track review.id) {
-            <div class="review-item">
+            <div class="review-item" [class.editing]="editingReview()?.id === review.id">
               <div class="review-header">
                 <strong>{{ review.user.username }}</strong>
                 <app-star-rating [rating]="review.rating"></app-star-rating>
                 <span class="review-date">{{ review.createdAt | date: 'mediumDate' }}</span>
                 @if (auth.currentUser?.id === review.user.id) {
+                  <button
+                    mat-icon-button
+                    (click)="onEditReview(review)"
+                    title="Edit review"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
                   <button
                     mat-icon-button
                     color="warn"
