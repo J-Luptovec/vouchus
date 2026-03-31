@@ -9,4 +9,5 @@ export const config = {
   jwtSecret: required('JWT_SECRET'),
   databaseUrl: required('DATABASE_URL'),
   jwtExpiresIn: '7d' as const,
+  corsOrigin: process.env['CORS_ORIGIN'] ?? 'http://localhost:4200',
 };

@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import rateLimit from 'express-rate-limit';
 import { config } from './config';
 import { authRouter } from './routes/auth.routes';
 import { productRouter } from './routes/product.routes';
@@ -12,9 +13,10 @@ import { errorHandler } from './middleware/errorHandler';
 const app = express();
 
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:4200', credentials: true }));
+app.use(cors({ origin: config.corsOrigin, credentials: true }));
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 100 }));
 
 app.use('/api/auth', authRouter);
 app.use('/api/products', productRouter);
