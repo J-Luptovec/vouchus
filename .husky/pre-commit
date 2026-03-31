@@ -1,0 +1,3 @@
+#!/bin/bash -l
+./node_modules/.bin/lint-staged
+

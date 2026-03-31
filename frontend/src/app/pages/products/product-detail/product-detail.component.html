@@ -60,11 +60,7 @@
                 <app-star-rating [rating]="review.rating"></app-star-rating>
                 <span class="review-date">{{ review.createdAt | date: 'mediumDate' }}</span>
                 @if (auth.currentUser?.id === review.user.id) {
-                  <button
-                    mat-icon-button
-                    (click)="onEditReview(review)"
-                    title="Edit review"
-                  >
+                  <button mat-icon-button (click)="onEditReview(review)" title="Edit review">
                     <mat-icon>edit</mat-icon>
                   </button>
                   <button
