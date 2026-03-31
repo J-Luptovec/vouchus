@@ -11,7 +11,13 @@ import { Review } from '../../../models/review.model';
 @Component({
   selector: 'app-review-form',
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './review-form.component.html',
   styleUrl: './review-form.component.scss',
 })

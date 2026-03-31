@@ -9,14 +9,22 @@
     </a>
 
     <div class="product-header">
-      <img [src]="product()!.imageUrl || 'https://placehold.co/600x400?text=No+Image'" [alt]="product()!.name" class="product-image" />
+      <img
+        [src]="product()!.imageUrl || 'https://placehold.co/600x400?text=No+Image'"
+        [alt]="product()!.name"
+        class="product-image"
+      />
       <div class="product-info">
-        <mat-chip-set><mat-chip>{{ product()!.category }}</mat-chip></mat-chip-set>
+        <mat-chip-set
+          ><mat-chip>{{ product()!.category }}</mat-chip></mat-chip-set
+        >
         <h1>{{ product()!.name }}</h1>
         <div class="rating-row">
           <app-star-rating [rating]="product()!.avgRating ?? 0"></app-star-rating>
           <span class="rating-text">
-            {{ product()!.avgRating ? (product()!.avgRating! | number:'1.1-1') : 'No ratings yet' }}
+            {{
+              product()!.avgRating ? (product()!.avgRating! | number: '1.1-1') : 'No ratings yet'
+            }}
             ({{ reviews().length }} review{{ reviews().length !== 1 ? 's' : '' }})
           </span>
         </div>
@@ -31,9 +39,7 @@
       <h2>Reviews</h2>
 
       @if (auth.isLoggedIn() && !hasReviewed()) {
-        <app-review-form
-          [productId]="product()!.id"
-          (reviewAdded)="onReviewAdded($event)">
+        <app-review-form [productId]="product()!.id" (reviewAdded)="onReviewAdded($event)">
         </app-review-form>
         <mat-divider></mat-divider>
       }
@@ -47,9 +53,14 @@
               <div class="review-header">
                 <strong>{{ review.user.username }}</strong>
                 <app-star-rating [rating]="review.rating"></app-star-rating>
-                <span class="review-date">{{ review.createdAt | date:'mediumDate' }}</span>
+                <span class="review-date">{{ review.createdAt | date: 'mediumDate' }}</span>
                 @if (auth.currentUser?.id === review.user.id) {
-                  <button mat-icon-button color="warn" (click)="onReviewDeleted(review.id)" title="Delete review">
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="onReviewDeleted(review.id)"
+                    title="Delete review"
+                  >
                     <mat-icon>delete</mat-icon>
                   </button>
                 }

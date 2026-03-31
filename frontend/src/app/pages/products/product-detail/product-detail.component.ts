@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,7 +7,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatChipsModule } from '@angular/material/chips';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
-import { ReviewService } from '../../../core/services/review.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Product } from '../../../models/product.model';
 import { Review } from '../../../models/review.model';
@@ -36,7 +35,6 @@ import { ReviewFormComponent } from '../../reviews/review-form/review-form.compo
 export class ProductDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
-  private reviewService = inject(ReviewService);
   readonly auth = inject(AuthService);
 
   product = signal<Product | null>(null);
@@ -48,12 +46,12 @@ export class ProductDetailComponent implements OnInit {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.productService.getProduct(id).subscribe({
-      next: (p: any) => {
+      next: (p: Product) => {
         this.product.set(p);
         this.reviews.set(p.reviews ?? []);
         if (this.auth.currentUser) {
           this.hasReviewed.set(
-            p.reviews?.some((r: Review) => r.user.id === this.auth.currentUser!.id) ?? false
+            p.reviews?.some((r: Review) => r.user.id === this.auth.currentUser!.id) ?? false,
           );
         }
         this.loading.set(false);

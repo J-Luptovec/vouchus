@@ -21,7 +21,9 @@
           <input matInput formControlName="username" />
           @if (form.get('username')?.hasError('required') && form.get('username')?.touched) {
             <mat-error>Username required</mat-error>
-          } @else if (form.get('username')?.hasError('minlength') && form.get('username')?.touched) {
+          } @else if (
+            form.get('username')?.hasError('minlength') && form.get('username')?.touched
+          ) {
             <mat-error>Minimum 3 characters</mat-error>
           } @else if (form.get('username')?.hasError('pattern') && form.get('username')?.touched) {
             <mat-error>Letters, numbers and underscores only</mat-error>
@@ -33,12 +35,20 @@
           <input matInput type="password" formControlName="password" />
           @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
             <mat-error>Password required</mat-error>
-          } @else if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+          } @else if (
+            form.get('password')?.hasError('minlength') && form.get('password')?.touched
+          ) {
             <mat-error>Minimum 8 characters</mat-error>
           }
         </mat-form-field>
 
-        <button mat-flat-button color="primary" type="submit" class="full-width submit-btn" [disabled]="form.invalid || loading()">
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="full-width submit-btn"
+          [disabled]="form.invalid || loading()"
+        >
           {{ loading() ? 'Creating account…' : 'Create Account' }}
         </button>
       </form>

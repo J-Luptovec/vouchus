@@ -8,7 +8,10 @@ export interface Product {
   avgRating?: number;
   createdAt: string;
   _count?: { reviews: number };
+  reviews?: Review[];
 }
+
+import { Review } from './review.model';
 
 export interface ProductsResponse {
   products: Product[];

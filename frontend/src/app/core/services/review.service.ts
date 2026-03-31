@@ -9,14 +9,21 @@ export class ReviewService {
 
   getReviews(productId: string, page = 1, limit = 10) {
     const params = new HttpParams().set('page', page).set('limit', limit);
-    return this.http.get<ReviewsResponse>(`${environment.apiUrl}/products/${productId}/reviews`, { params });
+    return this.http.get<ReviewsResponse>(`${environment.apiUrl}/products/${productId}/reviews`, {
+      params,
+    });
   }
 
   createReview(productId: string, rating: number, body: string) {
-    return this.http.post<Review>(`${environment.apiUrl}/products/${productId}/reviews`, { rating, body });
+    return this.http.post<Review>(`${environment.apiUrl}/products/${productId}/reviews`, {
+      rating,
+      body,
+    });
   }
 
   deleteReview(productId: string, reviewId: string) {
-    return this.http.delete<void>(`${environment.apiUrl}/products/${productId}/reviews/${reviewId}`);
+    return this.http.delete<void>(
+      `${environment.apiUrl}/products/${productId}/reviews/${reviewId}`,
+    );
   }
 }

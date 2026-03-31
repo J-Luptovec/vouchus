@@ -1,4 +1,4 @@
-import { prisma } from "../prisma";
+import { prisma } from '../prisma';
 import bcrypt from 'bcrypt';
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { config } from '../config';
@@ -25,7 +25,7 @@ export const authService = {
     const token = jwt.sign(
       { userId: user.id, email: user.email, username: user.username },
       config.jwtSecret,
-      { expiresIn: config.jwtExpiresIn } as SignOptions
+      { expiresIn: config.jwtExpiresIn } as SignOptions,
     );
 
     return { token, user };
@@ -49,7 +49,7 @@ export const authService = {
     const token = jwt.sign(
       { userId: user.id, email: user.email, username: user.username },
       config.jwtSecret,
-      { expiresIn: config.jwtExpiresIn } as SignOptions
+      { expiresIn: config.jwtExpiresIn } as SignOptions,
     );
 
     return { token, user: { id: user.id, email: user.email, username: user.username } };

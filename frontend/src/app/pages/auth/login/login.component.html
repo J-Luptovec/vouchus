@@ -24,7 +24,13 @@
           }
         </mat-form-field>
 
-        <button mat-flat-button color="primary" type="submit" class="full-width submit-btn" [disabled]="form.invalid || loading()">
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          class="full-width submit-btn"
+          [disabled]="form.invalid || loading()"
+        >
           {{ loading() ? 'Signing in…' : 'Sign In' }}
         </button>
       </form>

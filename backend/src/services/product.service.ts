@@ -1,6 +1,5 @@
-
 import { CreateProductInput } from '../validators/product.validator';
-import { prisma } from "../prisma";
+import { prisma } from '../prisma';
 
 export const productService = {
   async listProducts(page: number, limit: number) {

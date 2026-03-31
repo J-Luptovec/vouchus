@@ -11,8 +11,12 @@ import { NavbarComponent } from './shared/components/navbar/navbar.component';
       <router-outlet></router-outlet>
     </main>
   `,
-  styles: [`
-    .content { min-height: calc(100vh - 64px); }
-  `],
+  styles: [
+    `
+      .content {
+        min-height: calc(100vh - 64px);
+      }
+    `,
+  ],
 })
 export class App {}

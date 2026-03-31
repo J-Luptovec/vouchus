@@ -11,13 +11,20 @@
     <div class="product-grid">
       @for (product of response()?.products; track product.id) {
         <mat-card class="product-card">
-          <img mat-card-image [src]="product.imageUrl || 'https://placehold.co/400x220?text=No+Image'" [alt]="product.name" />
+          <img
+            mat-card-image
+            [src]="product.imageUrl || 'https://placehold.co/400x220?text=No+Image'"
+            [alt]="product.name"
+          />
           <mat-card-header>
             <mat-card-title>{{ product.name }}</mat-card-title>
             <mat-card-subtitle>{{ product.category }}</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
-            <p class="product-description">{{ product.description | slice:0:100 }}{{ product.description.length > 100 ? '…' : '' }}</p>
+            <p class="product-description">
+              {{ product.description | slice: 0 : 100
+              }}{{ product.description.length > 100 ? '…' : '' }}
+            </p>
             <div class="product-meta">
               <span class="price">{{ product.price | currency }}</span>
               <div class="rating-row">
@@ -40,7 +47,8 @@
         [pageSizeOptions]="[6, 12, 24]"
         [pageIndex]="page() - 1"
         (page)="onPageChange($event)"
-        showFirstLastButtons>
+        showFirstLastButtons
+      >
       </mat-paginator>
     }
   }

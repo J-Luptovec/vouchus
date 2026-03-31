@@ -1,4 +1,4 @@
-import { Component, Input, computed, signal } from '@angular/core';
+import { Component, Input, signal } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
@@ -12,11 +12,22 @@ import { MatIconModule } from '@angular/material/icon';
       }
     </span>
   `,
-  styles: [`
-    .stars { display: inline-flex; }
-    .star { font-size: 18px; width: 18px; height: 18px; color: #ccc; }
-    .star.filled { color: #f59e0b; }
-  `],
+  styles: [
+    `
+      .stars {
+        display: inline-flex;
+      }
+      .star {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        color: #ccc;
+      }
+      .star.filled {
+        color: #f59e0b;
+      }
+    `,
+  ],
 })
 export class StarRatingComponent {
   @Input() rating = 0;

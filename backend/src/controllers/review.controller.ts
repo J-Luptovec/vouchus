@@ -20,7 +20,7 @@ export const reviewController = {
       const review = await reviewService.createReview(
         req.params['productId'] as string,
         req.user!.userId,
-        data
+        data,
       );
       res.status(201).json(review);
     } catch (err) {
