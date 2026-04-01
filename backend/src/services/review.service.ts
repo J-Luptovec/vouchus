@@ -1,6 +1,6 @@
 import { prisma } from '../prisma';
 import { CreateReviewInput } from '../validators/review.validator';
-import { Prisma } from '@prisma/client';
+import { Prisma } from '../../generated/prisma/client/client.js';
 import { createHttpError } from '../utils/http-error';
 import { orderService } from './order.service';
 
