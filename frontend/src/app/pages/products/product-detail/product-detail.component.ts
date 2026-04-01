@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +8,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
 import { ReviewService } from '../../../core/services/review.service';
+import { OrderService } from '../../../core/services/order.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Product } from '../../../models/product.model';
 import { Review } from '../../../models/review.model';
 import { StarRatingComponent } from '../../../shared/components/star-rating/star-rating.component';
@@ -37,6 +39,8 @@ export class ProductDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
   private reviewService = inject(ReviewService);
+  private orderService = inject(OrderService);
+  private snackBar = inject(MatSnackBar);
   readonly auth = inject(AuthService);
 
   product = signal<Product | null>(null);
@@ -44,6 +48,8 @@ export class ProductDetailComponent implements OnInit {
   loading = signal(true);
   error = signal<string | null>(null);
   hasReviewed = signal(false);
+  hasPurchased = computed(() => this.product()?.hasPurchased ?? false);
+  buying = signal(false);
   editingReview = signal<Review | null>(null);
 
   ngOnInit() {
@@ -62,6 +68,21 @@ export class ProductDetailComponent implements OnInit {
       error: () => {
         this.error.set('Product not found.');
         this.loading.set(false);
+      },
+    });
+  }
+
+  onBuy() {
+    this.buying.set(true);
+    this.orderService.buyProduct(this.product()!.id).subscribe({
+      next: () => {
+        this.product.update((p) => (p ? { ...p, hasPurchased: true } : p));
+        this.buying.set(false);
+        this.snackBar.open('Purchase successful!', 'Close', { duration: 3000 });
+      },
+      error: () => {
+        this.buying.set(false);
+        this.snackBar.open('Purchase failed. Please try again.', 'Close', { duration: 4000 });
       },
     });
   }

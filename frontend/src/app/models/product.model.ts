@@ -7,6 +7,7 @@ export interface Product {
   price: number;
   avgRating?: number;
   createdAt: string;
+  hasPurchased: boolean;
   _count?: { reviews: number };
   reviews?: Review[];
 }

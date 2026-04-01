@@ -1,6 +1,8 @@
 import { prisma } from '../prisma';
 import { CreateReviewInput } from '../validators/review.validator';
 import { Prisma } from '@prisma/client';
+import { createHttpError } from '../utils/http-error';
+import { orderService } from './order.service';
 
 export const reviewService = {
   async getReviews(productId: string, page: number, limit: number) {
@@ -19,56 +21,44 @@ export const reviewService = {
   },
 
   async createReview(productId: string, userId: string, data: CreateReviewInput) {
-    const product = await prisma.product.findUnique({ where: { id: productId } });
-    if (!product) {
-      const err = new Error('Product not found') as Error & { status: number };
-      err.status = 404;
+    const hasPurchased = await orderService.hasPurchased(userId, productId);
+    if (!hasPurchased)
+      throw createHttpError(403, 'You must purchase this product before reviewing it');
+
+    try {
+      return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+        const created = await tx.review.create({
+          data: { ...data, userId, productId },
+          include: { user: { select: { id: true, username: true } } },
+        });
+
+        const { _avg } = await tx.review.aggregate({
+          where: { productId },
+          _avg: { rating: true },
+        });
+
+        await tx.product.update({
+          where: { id: productId },
+          data: { avgRating: _avg.rating ?? undefined },
+        });
+
+        return created;
+      });
+    } catch (err) {
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
+        throw createHttpError(409, 'You have already reviewed this product');
+      }
+      if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2003') {
+        throw createHttpError(404, 'Product not found');
+      }
       throw err;
     }
-
-    const existing = await prisma.review.findUnique({
-      where: { userId_productId: { userId, productId } },
-    });
-    if (existing) {
-      const err = new Error('You have already reviewed this product') as Error & { status: number };
-      err.status = 409;
-      throw err;
-    }
-
-    const review = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-      const created = await tx.review.create({
-        data: { ...data, userId, productId },
-        include: { user: { select: { id: true, username: true } } },
-      });
-
-      const { _avg } = await tx.review.aggregate({
-        where: { productId },
-        _avg: { rating: true },
-      });
-
-      await tx.product.update({
-        where: { id: productId },
-        data: { avgRating: _avg.rating ?? undefined },
-      });
-
-      return created;
-    });
-
-    return review;
   },
 
   async updateReview(reviewId: string, userId: string, data: CreateReviewInput) {
     const review = await prisma.review.findUnique({ where: { id: reviewId } });
-    if (!review) {
-      const err = new Error('Review not found') as Error & { status: number };
-      err.status = 404;
-      throw err;
-    }
-    if (review.userId !== userId) {
-      const err = new Error('Forbidden') as Error & { status: number };
-      err.status = 403;
-      throw err;
-    }
+    if (!review) throw createHttpError(404, 'Review not found');
+    if (review.userId !== userId) throw createHttpError(403, 'Forbidden');
 
     return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const updated = await tx.review.update({
@@ -93,16 +83,8 @@ export const reviewService = {
 
   async deleteReview(reviewId: string, userId: string) {
     const review = await prisma.review.findUnique({ where: { id: reviewId } });
-    if (!review) {
-      const err = new Error('Review not found') as Error & { status: number };
-      err.status = 404;
-      throw err;
-    }
-    if (review.userId !== userId) {
-      const err = new Error('Forbidden') as Error & { status: number };
-      err.status = 403;
-      throw err;
-    }
+    if (!review) throw createHttpError(404, 'Review not found');
+    if (review.userId !== userId) throw createHttpError(403, 'Forbidden');
 
     await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.review.delete({ where: { id: reviewId } });

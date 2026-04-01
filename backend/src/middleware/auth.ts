@@ -17,6 +17,23 @@ declare global {
   }
 }
 
+function verifyToken(authHeader: string): JwtPayload | null {
+  try {
+    return jwt.verify(authHeader.slice(7), config.jwtSecret) as JwtPayload;
+  } catch {
+    return null;
+  }
+}
+
+export const optionalAuthenticate = (req: Request, _res: Response, next: NextFunction): void => {
+  const authHeader = req.headers.authorization;
+  if (authHeader?.startsWith('Bearer ')) {
+    const payload = verifyToken(authHeader);
+    if (payload) req.user = payload;
+  }
+  next();
+};
+
 export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
   const authHeader = req.headers.authorization;
   if (!authHeader?.startsWith('Bearer ')) {
@@ -24,12 +41,12 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
     return;
   }
 
-  const token = authHeader.slice(7);
-  try {
-    const payload = jwt.verify(token, config.jwtSecret) as JwtPayload;
-    req.user = payload;
-    next();
-  } catch {
+  const payload = verifyToken(authHeader);
+  if (!payload) {
     res.status(401).json({ error: 'Invalid or expired token' });
+    return;
   }
+
+  req.user = payload;
+  next();
 };

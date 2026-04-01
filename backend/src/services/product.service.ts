@@ -1,4 +1,6 @@
 import { prisma } from '../prisma';
+import { createHttpError } from '../utils/http-error';
+import { orderService } from './order.service';
 
 export const productService = {
   async listProducts(page: number, limit: number) {
@@ -15,23 +17,23 @@ export const productService = {
     return { products, total, page, limit, totalPages: Math.ceil(total / limit) };
   },
 
-  async getProduct(id: string) {
-    const product = await prisma.product.findUnique({
-      where: { id },
-      include: {
-        _count: { select: { reviews: true } },
-        reviews: {
-          orderBy: { createdAt: 'desc' },
-          take: 10,
-          include: { user: { select: { id: true, username: true } } },
+  async getProduct(id: string, userId?: string) {
+    const [product, hasPurchased] = await Promise.all([
+      prisma.product.findUnique({
+        where: { id },
+        include: {
+          _count: { select: { reviews: true } },
+          reviews: {
+            orderBy: { createdAt: 'desc' },
+            take: 10,
+            include: { user: { select: { id: true, username: true } } },
+          },
         },
-      },
-    });
-    if (!product) {
-      const err = new Error('Product not found') as Error & { status: number };
-      err.status = 404;
-      throw err;
-    }
-    return product;
+      }),
+      userId ? orderService.hasPurchased(userId, id) : false,
+    ]);
+
+    if (!product) throw createHttpError(404, 'Product not found');
+    return { ...product, hasPurchased };
   },
 };

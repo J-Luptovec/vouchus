@@ -15,7 +15,7 @@ export const productController = {
 
   async getProduct(req: Request, res: Response, next: NextFunction) {
     try {
-      const product = await productService.getProduct(req.params['id'] as string);
+      const product = await productService.getProduct(req.params['id'] as string, req.user?.userId);
       res.json(product);
     } catch (err) {
       next(err);

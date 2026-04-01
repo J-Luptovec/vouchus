@@ -29,6 +29,18 @@
           </span>
         </div>
         <p class="price">{{ product()!.price | currency }}</p>
+        @if (auth.isLoggedIn()) {
+          <button
+            mat-flat-button
+            color="primary"
+            class="buy-btn"
+            [disabled]="buying() || hasPurchased()"
+            (click)="onBuy()"
+          >
+            <mat-icon>shopping_cart</mat-icon>
+            {{ buying() ? 'Processing…' : hasPurchased() ? 'Purchased' : 'Buy' }}
+          </button>
+        }
         <p class="description">{{ product()!.description }}</p>
       </div>
     </div>
@@ -38,7 +50,7 @@
     <section class="reviews-section">
       <h2>Reviews</h2>
 
-      @if (auth.isLoggedIn() && (!hasReviewed() || editingReview())) {
+      @if (auth.isLoggedIn() && hasPurchased() && (!hasReviewed() || editingReview())) {
         <app-review-form
           [productId]="product()!.id"
           [editReview]="editingReview() ?? undefined"
@@ -47,6 +59,10 @@
           (editCancelled)="onEditCancelled()"
         ></app-review-form>
         <mat-divider></mat-divider>
+      } @else if (!auth.isLoggedIn()) {
+        <p class="no-reviews">You need to be logged in in order to create a review</p>
+      } @else {
+        <p class="no-reviews">You need to purchase this product in order to create a review</p>
       }
 
       @if (reviews().length === 0) {

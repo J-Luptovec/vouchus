@@ -14,6 +14,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
   reviews   Review[]
+  orders    Order[]
 }
 
 model Product {
@@ -26,6 +27,17 @@ model Product {
   avgRating   Float?
   createdAt   DateTime @default(now())
   reviews     Review[]
+  orders      Order[]
+}
+
+model Order {
+  id              String   @id @default(uuid())
+  priceAtPurchase Float
+  createdAt       DateTime @default(now())
+  userId          String
+  productId       String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Review {
