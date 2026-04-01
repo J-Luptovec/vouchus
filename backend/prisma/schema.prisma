@@ -32,6 +32,8 @@ model Review {
   id        String   @id @default(uuid())
   rating    Int
   body      String
+  pros      String[]
+  cons      String[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String

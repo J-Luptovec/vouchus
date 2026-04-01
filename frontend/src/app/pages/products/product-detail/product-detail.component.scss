@@ -1,3 +1,5 @@
+@use '../../../../styles/breakpoints' as bp;
+
 .spinner-container {
   display: flex;
   justify-content: center;
@@ -21,12 +23,12 @@
 
 .product-header {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 32px;
   margin-bottom: 32px;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  @media (min-width: bp.$breakpoint-desktop) {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -115,5 +117,37 @@
 .review-body {
   color: var(--mat-sys-on-surface);
   line-height: 1.6;
-  margin: 0;
+  margin: 0 0 12px;
+}
+
+.pros-cons {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.pros-cons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 0.9rem;
+  }
+}
+
+.pros-cons-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &.pros-label {
+    color: var(--color-positive);
+  }
+  &.cons-label {
+    color: var(--color-negative);
+  }
 }

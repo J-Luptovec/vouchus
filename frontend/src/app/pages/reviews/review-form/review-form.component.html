@@ -1,5 +1,5 @@
 <form [formGroup]="form" (ngSubmit)="submit()" class="review-form">
-  <h3>{{ isEditMode ? 'Edit Review' : 'Write a Review' }}</h3>
+  <h3>{{ editReview() ? 'Edit Review' : 'Write a Review' }}</h3>
 
   <div class="star-selector" role="group" aria-label="Rating">
     @for (star of [1, 2, 3, 4, 5]; track star) {
@@ -11,9 +11,9 @@
         (mouseleave)="hoveredStar.set(0)"
         [attr.aria-label]="star + ' stars'"
       >
-        <mat-icon [class.active]="star <= (hoveredStar() || (form.value.rating ?? 0))"
-          >star</mat-icon
-        >
+        <mat-icon [class.active]="star <= (hoveredStar() || (form.value.rating ?? 0))">
+          star
+        </mat-icon>
       </button>
     }
     @if (form.get('rating')?.invalid && form.get('rating')?.touched) {
@@ -34,11 +34,97 @@
     }
   </mat-form-field>
 
+  <div class="pros-cons-section">
+    <div class="pros-cons-group">
+      <span class="pros-cons-label pros-label"> <mat-icon>thumb_up</mat-icon> Pros </span>
+      <div class="pros-cons-chips">
+        @for (pro of prosArray.controls; track $index) {
+          <div class="chip chip-pro">
+            {{ pro.value }}
+            <button
+              type="button"
+              class="chip-remove"
+              (click)="removeItem(prosArray, $index)"
+              aria-label="Remove pro"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+      @if (prosArray.length < RC.PRO_CON_MAX_ITEMS) {
+        <div class="pros-cons-input-row">
+          <mat-form-field appearance="outline" class="pros-cons-field">
+            <input
+              matInput
+              [value]="proInput()"
+              (input)="proInput.set($any($event.target).value)"
+              (keydown.enter)="$event.preventDefault(); addItem(proInput, prosArray)"
+              placeholder="Add a pro..."
+              [attr.maxlength]="RC.PRO_CON_ITEM_MAX_LENGTH"
+            />
+          </mat-form-field>
+          <button
+            type="button"
+            mat-icon-button
+            (click)="addItem(proInput, prosArray)"
+            aria-label="Add pro"
+            class="add-icon-button"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="pros-cons-group">
+      <span class="pros-cons-label cons-label"> <mat-icon>thumb_down</mat-icon> Cons </span>
+      <div class="pros-cons-chips">
+        @for (con of consArray.controls; track $index) {
+          <div class="chip chip-con">
+            {{ con.value }}
+            <button
+              type="button"
+              class="chip-remove"
+              (click)="removeItem(consArray, $index)"
+              aria-label="Remove con"
+            >
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+      @if (consArray.length < RC.PRO_CON_MAX_ITEMS) {
+        <div class="pros-cons-input-row">
+          <mat-form-field appearance="outline" class="pros-cons-field">
+            <input
+              matInput
+              [value]="conInput()"
+              (input)="conInput.set($any($event.target).value)"
+              (keydown.enter)="$event.preventDefault(); addItem(conInput, consArray)"
+              placeholder="Add a con..."
+              [attr.maxlength]="RC.PRO_CON_ITEM_MAX_LENGTH"
+            />
+          </mat-form-field>
+          <button
+            type="button"
+            mat-icon-button
+            (click)="addItem(conInput, consArray)"
+            aria-label="Add con"
+            class="add-icon-button"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+
   <div class="form-actions">
     <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid || submitting()">
-      {{ submitting() ? 'Saving…' : isEditMode ? 'Update Review' : 'Submit Review' }}
+      {{ submitting() ? 'Saving…' : editReview() ? 'Update Review' : 'Submit Review' }}
     </button>
-    @if (isEditMode) {
+    @if (editReview()) {
       <button mat-button type="button" (click)="cancel()">Cancel</button>
     }
   </div>

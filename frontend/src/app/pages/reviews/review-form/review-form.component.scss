@@ -1,10 +1,14 @@
+@use '../../../../styles/breakpoints' as bp;
+
 .review-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding: 16px 0;
 
-  h3 { margin: 0; }
+  h3 {
+    margin: 0;
+  }
 }
 
 .star-selector {
@@ -13,9 +17,11 @@
   gap: 4px;
 
   mat-icon {
-    color: #ccc;
+    color: var(--color-star-empty);
     transition: color 0.15s;
-    &.active { color: #f59e0b; }
+    &.active {
+      color: var(--color-star-filled);
+    }
   }
 }
 
@@ -27,6 +33,107 @@
 
 .full-width {
   width: 100%;
+}
+
+.pros-cons-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+
+  @media (min-width: bp.$breakpoint-desktop) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.pros-cons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pros-cons-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+
+  mat-icon {
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+  }
+
+  &.pros-label {
+    color: var(--color-positive);
+  }
+  &.cons-label {
+    color: var(--color-negative);
+  }
+}
+
+.pros-cons-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 4px 4px 12px;
+  border-radius: 16px;
+  font-size: 0.85rem;
+
+  &.chip-pro {
+    background-color: var(--color-positive-bg);
+    color: var(--color-positive);
+  }
+
+  &.chip-con {
+    background-color: var(--color-negative-bg);
+    color: var(--color-negative);
+  }
+
+  .chip-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+  }
+}
+
+.pros-cons-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  .add-icon-button {
+    bottom: 8px;
+  }
+}
+
+.pros-cons-field {
+  flex: 1;
 }
 
 .form-actions {

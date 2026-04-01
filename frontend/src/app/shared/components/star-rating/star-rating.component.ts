@@ -21,10 +21,10 @@ import { MatIconModule } from '@angular/material/icon';
         font-size: 18px;
         width: 18px;
         height: 18px;
-        color: #ccc;
+        color: var(--color-star-empty);
       }
       .star.filled {
-        color: #f59e0b;
+        color: var(--color-star-filled);
       }
     `,
   ],

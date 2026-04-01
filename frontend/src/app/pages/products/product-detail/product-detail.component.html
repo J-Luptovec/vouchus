@@ -74,6 +74,30 @@
                 }
               </div>
               <p class="review-body">{{ review.body }}</p>
+              @if (review.pros.length || review.cons.length) {
+                <div class="pros-cons">
+                  @if (review.pros.length) {
+                    <div class="pros-cons-group">
+                      <span class="pros-cons-label pros-label">Pros</span>
+                      <ul>
+                        @for (pro of review.pros; track pro) {
+                          <li>{{ pro }}</li>
+                        }
+                      </ul>
+                    </div>
+                  }
+                  @if (review.cons.length) {
+                    <div class="pros-cons-group">
+                      <span class="pros-cons-label cons-label">Cons</span>
+                      <ul>
+                        @for (con of review.cons; track con) {
+                          <li>{{ con }}</li>
+                        }
+                      </ul>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           }
         </div>

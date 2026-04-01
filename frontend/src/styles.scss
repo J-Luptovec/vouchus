@@ -17,6 +17,16 @@ html {
       density: 0,
     )
   );
+
+  // App color palette
+  --color-star-filled: #f59e0b;
+  --color-star-empty: #cccccc;
+  --color-positive: #16a34a;
+  --color-positive-bg: #dcfce7;
+  --color-negative: #b91c1c;
+  --color-negative-bg: #fee2e2;
+  --color-on-primary: #ffffff;
+  --color-on-primary-active-bg: rgba(255, 255, 255, 0.15);
 }
 
 body {
@@ -36,12 +46,27 @@ body {
   margin: 0;
   height: 100%;
 }
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
   margin: 0;
   color: var(--mat-sys-on-surface);
 }
 
-h1 { font: var(--mat-sys-headline-large); }
-h2 { font: var(--mat-sys-headline-medium); }
-h3 { font: var(--mat-sys-headline-small); }
-h4 { font: var(--mat-sys-title-large); }
+h1 {
+  font: var(--mat-sys-headline-large);
+}
+h2 {
+  font: var(--mat-sys-headline-medium);
+}
+h3 {
+  font: var(--mat-sys-headline-small);
+}
+h4 {
+  font: var(--mat-sys-title-large);
+}
+
+mat-form-field {
+  margin-bottom: 8px;
+}

@@ -2,6 +2,8 @@ export interface Review {
   id: string;
   rating: number;
   body: string;
+  pros: string[];
+  cons: string[];
   createdAt: string;
   user: { id: string; username: string };
 }

@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-echo "Pushing schema to database..."
-npx prisma db push
+echo "Running migrations..."
+npx prisma migrate deploy
 
 echo "Seeding database..."
 npx tsx prisma/seed.ts

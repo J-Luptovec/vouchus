@@ -14,17 +14,26 @@ export class ReviewService {
     });
   }
 
-  createReview(productId: string, rating: number, body: string) {
+  createReview(productId: string, rating: number, body: string, pros: string[], cons: string[]) {
     return this.http.post<Review>(`${environment.apiUrl}/products/${productId}/reviews`, {
       rating,
       body,
+      pros,
+      cons,
     });
   }
 
-  updateReview(productId: string, reviewId: string, rating: number, body: string) {
+  updateReview(
+    productId: string,
+    reviewId: string,
+    rating: number,
+    body: string,
+    pros: string[],
+    cons: string[],
+  ) {
     return this.http.patch<Review>(
       `${environment.apiUrl}/products/${productId}/reviews/${reviewId}`,
-      { rating, body },
+      { rating, body, pros, cons },
     );
   }
 

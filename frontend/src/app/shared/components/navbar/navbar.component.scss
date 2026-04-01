@@ -8,11 +8,13 @@
 .brand {
   font-size: 1.2rem;
   font-weight: 700;
-  color: white;
+  color: var(--color-on-primary);
   text-decoration: none;
 }
 
-.spacer { flex: 1; }
+.spacer {
+  flex: 1;
+}
 
 .username {
   font-size: 0.9rem;
@@ -20,6 +22,6 @@
 }
 
 .active-link {
-  background: rgba(255,255,255,0.15);
+  background: var(--color-on-primary-active-bg);
   border-radius: 4px;
 }
