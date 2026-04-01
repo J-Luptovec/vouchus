@@ -9,7 +9,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "backend/src/**/*.ts": "backend/node_modules/.bin/eslint --fix",
+    "backend/{src,tests}/**/*.ts": "backend/node_modules/.bin/eslint --fix",
     "frontend/src/**/*.{ts,html}": "frontend/node_modules/.bin/eslint --fix",
     "frontend/src/**/*.scss": "frontend/node_modules/.bin/prettier --write"
   },
