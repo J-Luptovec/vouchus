@@ -40,7 +40,7 @@
       }
     </div>
 
-    @if (response() && (response()?.totalPages ?? 0) > 1) {
+    @if (response()) {
       <mat-paginator
         [length]="response()?.total ?? 0"
         [pageSize]="limit()"

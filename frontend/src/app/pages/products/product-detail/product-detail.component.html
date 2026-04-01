@@ -59,9 +59,13 @@
           (editCancelled)="onEditCancelled()"
         ></app-review-form>
         <mat-divider></mat-divider>
-      } @else if (!auth.isLoggedIn()) {
+      }
+
+      @if (!auth.isLoggedIn()) {
         <p class="no-reviews">You need to be logged in in order to create a review</p>
-      } @else {
+      }
+
+      @if (!hasPurchased()) {
         <p class="no-reviews">You need to purchase this product in order to create a review</p>
       }
 
